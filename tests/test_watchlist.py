@@ -11,6 +11,7 @@ from services.collection_service import FilmNotFoundError
 from services.watchlist_service import (
     add_to_watchlist,
     remove_from_watchlist,
+    get_watchlist,
     AlreadyInWatchlistError,
     NotInWatchlistError,
 )
@@ -141,3 +142,38 @@ def test_remove_from_watchlist_missing_entry_raises(app, sample_user, sample_fil
     with app.app_context():
         with pytest.raises(NotInWatchlistError):
             remove_from_watchlist(user_id=sample_user, film_id=sample_film)
+
+
+def test_get_watchlist_returns_newest_first(app, sample_user):
+    """
+    get_watchlist() should return the most recently added film first.
+    """
+    with app.app_context():
+        from datetime import datetime, timezone, timedelta
+
+        film_a = Film(title="Arrival", year=2016, genre="Sci-Fi")
+        film_b = Film(title="Zodiac", year=2007, genre="Thriller")
+        db.session.add_all([film_a, film_b])
+        db.session.commit()
+
+        earlier = datetime.now(timezone.utc) - timedelta(days=3)
+        later = datetime.now(timezone.utc)
+
+        entry_a = WatchlistEntry(
+            user_id=sample_user,
+            film_id=film_a.id,
+            date_added=earlier,
+        )
+        entry_b = WatchlistEntry(
+            user_id=sample_user,
+            film_id=film_b.id,
+            date_added=later,
+        )
+        db.session.add_all([entry_a, entry_b])
+        db.session.commit()
+
+        watchlist = get_watchlist(sample_user)
+        titles = [film["title"] for film in watchlist]
+
+        assert titles[0] == "Zodiac"
+        assert titles[1] == "Arrival"
