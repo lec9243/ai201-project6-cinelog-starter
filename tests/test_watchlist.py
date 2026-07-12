@@ -10,7 +10,9 @@ from models import User, Film, WatchlistEntry
 from services.collection_service import FilmNotFoundError
 from services.watchlist_service import (
     add_to_watchlist,
+    remove_from_watchlist,
     AlreadyInWatchlistError,
+    NotInWatchlistError,
 )
 
 
@@ -114,3 +116,28 @@ def test_add_watchlist_endpoint_accepts_private_visibility(app, sample_user, sam
         ).first()
         assert entry is not None
         assert entry.public is False
+
+
+def test_remove_from_watchlist_removes_entry(app, sample_user, sample_film):
+    """
+    Removing a watchlist entry should delete it from the database.
+    """
+    with app.app_context():
+        add_to_watchlist(user_id=sample_user, film_id=sample_film)
+
+        removed = remove_from_watchlist(user_id=sample_user, film_id=sample_film)
+
+        assert removed is True
+        in_db = WatchlistEntry.query.filter_by(
+            user_id=sample_user, film_id=sample_film
+        ).first()
+        assert in_db is None
+
+
+def test_remove_from_watchlist_missing_entry_raises(app, sample_user, sample_film):
+    """
+    Removing a film that is not on the watchlist should raise NotInWatchlistError.
+    """
+    with app.app_context():
+        with pytest.raises(NotInWatchlistError):
+            remove_from_watchlist(user_id=sample_user, film_id=sample_film)
