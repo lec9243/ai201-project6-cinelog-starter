@@ -91,3 +91,26 @@ def test_add_to_watchlist_nonexistent_film_raises(app, sample_user):
 
         with pytest.raises(FilmNotFoundError):
             add_to_watchlist(user_id=sample_user, film_id=fake_film_id)
+
+
+def test_add_watchlist_endpoint_accepts_private_visibility(app, sample_user, sample_film):
+    """
+    The add endpoint should let callers explicitly create a private entry.
+    """
+    client = app.test_client()
+
+    response = client.post(
+        f"/watchlist/{sample_user}/add",
+        json={"film_id": sample_film, "public": False},
+    )
+
+    assert response.status_code == 201
+    payload = response.get_json()
+    assert payload["public"] is False
+
+    with app.app_context():
+        entry = WatchlistEntry.query.filter_by(
+            user_id=sample_user, film_id=sample_film
+        ).first()
+        assert entry is not None
+        assert entry.public is False
