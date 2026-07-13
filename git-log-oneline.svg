@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="354" viewBox="0 0 1120 354">
+  <rect width="1120" height="354" fill="#111827"/>
+  <text x="24" y="34" fill="#e5e7eb" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16">
+    <tspan x="24" dy="0">git log --oneline origin/main..HEAD</tspan>
+    <tspan x="24" dy="24">ab36479 docs: add watchlist PR response</tspan>
+    <tspan x="24" dy="24">ff61234 fix: update watchlist UUID references after refactor</tspan>
+    <tspan x="24" dy="24">32bc8c6 test: cover watchlist sort order</tspan>
+    <tspan x="24" dy="24">f4055fe fix: sort watchlist by date added</tspan>
+    <tspan x="24" dy="24">708640f test: cover watchlist removal</tspan>
+    <tspan x="24" dy="24">0a3f0bb feat: add watchlist removal</tspan>
+    <tspan x="24" dy="24">1ce241b test: cover watchlist visibility option</tspan>
+    <tspan x="24" dy="24">3c7e6ee feat: support watchlist visibility option</tspan>
+    <tspan x="24" dy="24">55bc4d1 test: add watchlist service coverage</tspan>
+    <tspan x="24" dy="24">6609a6f fix: prevent duplicate watchlist entries</tspan>
+    <tspan x="24" dy="24">ccc9cd6 fix: rename watchlist add service</tspan>
+    <tspan x="24" dy="24">a3950bf fix: update film retrieval method to use db.session.get in collection and watchlist services</tspan>
+    <tspan x="24" dy="24">9160889 feat: add watchlist service and routes</tspan>
+  </text>
+</svg>
